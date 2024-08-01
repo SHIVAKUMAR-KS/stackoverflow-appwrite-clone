@@ -34,3 +34,28 @@ You can check out [the Next.js GitHub repository](https://github.com/vercel/next
 The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+
+## steps to add shadcn in nextjs
+
+
+PS D:\Mood_aur_code\stackoverflow-appwrite-clone> npm i @tabler/icons-react
+
+added 2 packages, and audited 369 packages in 1m
+
+139 packages are looking for funding
+@latest init
+√ Which style would you like to use? » New York
+√ Which color would you like to use as base color? » Slate
+√ Would you like to use CSS variables for colors? ... no / yes
+
+✔ Writing components.json...
+✔ Initializing project...
+✔ Installing dependencies...
+
+Success! Project initialization completed. You may now add components.
+
+PS D:\Mood_aur_code\stackoverflow-appwrite-clone> npx shadcn-ui@latest add label   
+✔ Done.
+PS D:\Mood_aur_code\stackoverflow-appwrite-clone>
+PS D:\Mood_aur_code\stackoverflow-appwrite-clone> npx shadcn-ui@latest add input   
+✔ Done.
