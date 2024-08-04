@@ -1,5 +1,7 @@
-import { db, voteCollection } from "@/models/name"
-import { databases } from "@/models/server/config"
+
+import { answerCollection, db, questionCollection, voteCollection } from "@/models/name"
+import { databases, users } from "@/models/server/config"
+import { UserPrefs } from "@/store/Auth"
 import {NextRequest, NextResponse} from "next/server"
 import { Query } from "node-appwrite"
 
@@ -17,12 +19,56 @@ export async function POST(request : NextRequest){
         )
 
         if(response.documents.length > 0){
+            await databases.deleteDocument(db, voteCollection, response.documents[0].$id)
+
+            //decrease the reputation
+            const QuestionAnswer =await databases.getDocument
+            (
+                db,
+                type ==="question" ? questionCollection:
+                answerCollection,
+                typeId
+            );
+
+            const authorPrefs = await users.getPrefs<UserPrefs>(QuestionAnswer.authorId)
+            await users.updatePrefs<UserPrefs>(QuestionAnswer.authorId, {
+                reputation: response.documents[0].voteStatus ==="upvoted" ? Number(authorPrefs.reputation)-1:
+                Number(authorPrefs.reputation)+1
+            })
 
         }
         //that measn previous vote doest not exist or vote status changes
         if(response.documents[0]?.voteStatus !== voteStatus){
             
         }
+
+        const [upvotes,downvotes] =await Promise.all([
+            databases.listDocuments(db,voteCollection,[
+                Query.equal("type", type),
+                Query.equal("typeId", typeId),
+                Query.equal("voteStatus", "upvoted"),
+                Query.equal("voteById",voteById),
+                Query.limit(1),
+            ]),
+            databases.listDocuments(db,voteCollection,[
+                Query.equal("type", type),
+                Query.equal("typeId", typeId),
+                Query.equal("voteStatus", "downVoted"),
+                Query.equal("voteById",voteById),
+                Query.limit(1),
+            ]),
+        ])
+        return NextResponse.json(
+            {
+                data:{
+                    documents: null,voteResult: upvotes.total = downvotes.total,
+                },
+                message : "vote handled"
+            },
+            {
+                status: 200
+            }
+        )
     } catch (error : any) {
         return NextResponse.json(
             {
